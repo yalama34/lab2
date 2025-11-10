@@ -4,12 +4,14 @@ from .commands import (ls_command, cd_command,
                        mv_command, rm_command,
                        zip_command, unzip_command,
                        tar_command, untar_command,
-                       grep_command)
+                       grep_command, casino_command)
 from typing import List
 import shlex
 import os
 from .utils.logger import logger
 from pathlib import Path
+
+casino_balance = 500
 
 home_directory = os.path.expanduser('~')
 os.chdir(home_directory)
@@ -102,6 +104,16 @@ def grep(
 ):
     executor = grep_command.Executor(arguments=[pattern, path], recursive=recursive, no_register=no_register)
     executor.handle_grep()
+
+
+@app.command()
+def spin(
+        duration: int = typer.Argument(...),
+):
+    casino = casino_command.Casino(casino_balance)
+    casino.spin(duration)
+    typer.echo(f"Текущий баланс: {casino.balance}")
+
 
 """
 @app.command()
