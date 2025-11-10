@@ -30,7 +30,7 @@ def test_rm_directory_confirm_yes(fs: FakeFilesystem, monkeypatch):
     fs.create_file("dir_to_remove/a.txt", contents="a")
     fs.create_dir(str(TRASH_DIR))
 
-    result = runner.invoke(app, ["rm", "dir_to_remove"])
+    result = runner.invoke(app, ["rm", "dir_to_remove", "-r"])
 
     assert result.exit_code == 0
     assert not fs.exists("dir_to_remove")
@@ -43,7 +43,7 @@ def test_rm_directory_confirm_no(fs: FakeFilesystem, monkeypatch):
     fs.create_dir("dir_keep")
     fs.create_file("dir_keep/a.txt", contents="a")
 
-    result = runner.invoke(app, ["rm", "dir_keep"])
+    result = runner.invoke(app, ["rm", "dir_keep", "-r"])
 
     assert result.exit_code == 0
     assert "Cancelling command" in result.stdout

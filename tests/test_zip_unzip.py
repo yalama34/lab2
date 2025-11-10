@@ -6,11 +6,11 @@ from src.main import app
 
 runner = CliRunner()
 
-def _patch_resolve(monkeypatch):
+def patch_resolve(monkeypatch):
     monkeypatch.setattr(Path, "resolve", lambda self, *a, **k: self)
 
 def test_zip_creates_archive(fs: FakeFilesystem, monkeypatch):
-    _patch_resolve(monkeypatch)
+    patch_resolve(monkeypatch)
     fs.create_dir("data")
     fs.create_file("data/a.txt", contents="A")
     fs.create_file("data/b.txt", contents="B")
@@ -24,8 +24,8 @@ def test_zip_creates_archive(fs: FakeFilesystem, monkeypatch):
     assert any(name.endswith("a.txt") for name in names)
     assert any(name.endswith("b.txt") for name in names)
 
-def test_unzip_extracts_files(fs: FakeFilesystem, monkeypatch):
-    _patch_resolve(monkeypatch)
+def test_unzip_extracts_files(monkeypatch):
+    patch_resolve(monkeypatch)
     with zipfile.ZipFile("archive.zip", "w") as z:
         z.writestr("x.txt", "X")
         z.writestr("y.txt", "Y")
@@ -38,6 +38,6 @@ def test_unzip_extracts_files(fs: FakeFilesystem, monkeypatch):
         assert f.read() == "Y"
 
 def test_zip_nonexistent_source(fs: FakeFilesystem, monkeypatch):
-    _patch_resolve(monkeypatch)
+    patch_resolve(monkeypatch)
     result = runner.invoke(app, ["zip", "no_such_folder", "archive.zip"])
     assert isinstance(result.exception, FileNotFoundError)
