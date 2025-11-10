@@ -4,7 +4,6 @@ import typer
 from datetime import datetime
 from stat import filemode
 from ..utils import logger
-import errno
 
 class Executor():
     def __init__(self, detailed, arguments):
